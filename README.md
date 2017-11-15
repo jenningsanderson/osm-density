@@ -7,6 +7,7 @@ More of an art project than anything, this project uses tile-reduce and osm-qa-t
 
 Natural vs. manmade features are denoted by color in the final rendering.
 
+
 ## Running
 
 1. First, install node dependencies
@@ -26,3 +27,6 @@ Natural vs. manmade features are denoted by color in the final rendering.
         render -A -C360 -- result.dm 4 4 -158 62 -47 > result.png
 
    Be sure to check out [`datamaps`](http://github.com/ericfischer/datamaps) to tweak command line arguments... it likely won't look good the first time.
+   
+### Acknowledgements
+This is inspired by [Martin Raifer's `osm-node-density`](https://github.com/tyrasd/osm-node-density) work. 
