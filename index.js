@@ -12,7 +12,7 @@ config['sources'] = [{name: 'osm', mbtiles: path.join("/data/planet/latest.plane
 
 //config.bbox = [-109.0603,36.9924,-102.0409,41.0034]
 //config.bbox = [-86.35,23.44,-70.27,45.43]
-config.bbox = [-158.7,4.0,-47.3,62.4]
+//config.bbox = [-100,17,-95,29]
 config.map = path.join(__dirname, '/map-density.js')
 config.zoom = 12;
 config.maxWorkers = 30;

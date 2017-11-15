@@ -1,54 +1,64 @@
 'use strict';
 
 var tilebelt = require('@mapbox/tilebelt')
-var lineDistance = require('@turf/line-distance')
+//var turfBbox = require('@turf/bbox')
+//var turfArea = require('@turf/area')
 
 module.exports = function(data, tile, writeData, done) {
 
   //Extract the osm layer from the mbtile
   var layer = data.osm.osm;
-    
-  //We need to map timestamps to current vals
-  //ex: 1447046883  
-  //var first_time  = 1104537600
-  //var current_val = 1510713393    
-  //var range       = 406175793
-
+  
   var natural = [
     'natural',
     'waterway',
   ]
+  
+  var skip = [
+      'hires',
+      'boundary',
+      'admin_level',
+      'maritime'
+    ]
  
-  var suffix;
+  var suffix, str;
   layer.features.forEach(function(feat){
       
     //hard code some failures in here
-    if(feat.properties.boundary){
-      return
+    for(var i in skip){
+      if(feat.properties.hasOwnProperty(skip[i])){
+         return;
+      }
     }
-    if(feat.properties.admin_level){
-      return
-    }
-    
-    suffix=30;
 
+    if (feat.properties.name == 'Bermuda Triangle'){
+      return;
+    }
+
+    suffix=30;
+      
     for(var i in natural){
       if (feat.properties[natural[i]]){
         suffix=240;
       }
     }
-      
-    var str;
-      
+    
+    if (feat.properties.leisure == 'nature_reserve') {
+      suffix=240 //managed natural spaces... up for debate
+    }else if(feat.properties.landuse== 'forest'){
+      suffix=240
+    }
+        
+
     if (feat.geometry.type == "Polygon"){
       // No empty features allowed :) 
       if (Object.keys(feat.properties).length==7){
-        return;  
-      }else{
-        str = feat.geometry.coordinates[0].slice(0,50).map(function(x){ 
-          return x[1].toFixed(6)+","+x[0].toFixed(6) //+ " :" + (d*10).toFixed(0)
-        }).join(" ")
+        return;
       }
+
+      str = feat.geometry.coordinates[0].slice(0,50).map(function(x){ 
+        return x[1].toFixed(6)+","+x[0].toFixed(6) //+ " :" + suffix
+      }).join(" ")
     }else if (feat.geometry.type == "LineString"){
       //No empty features allowed :) 
       if (Object.keys(feat.properties).length==7){
