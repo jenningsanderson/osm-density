@@ -1,0 +1,14 @@
+{
+  "name": "osm-density",
+  "version": "1.0.0",
+  "description": "Use tile-reduce to process the latest osm-qa-tiles into datamaps files and then create raster tiles for visualization",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jennings Anderson",
+  "license": "ISC",
+  "dependencies": {
+    "@mapbox/tile-reduce": "^3.2.0"
+  }
+}
