@@ -8,39 +8,64 @@ module.exports = function(data, tile, writeData, done) {
   //Extract the osm layer from the mbtile
   var layer = data.osm.osm;
     
-  //We need a value to map to for the color? 
-  var idx = 10;
-    
   //We need to map timestamps to current vals
-  //ex: 1447046883
-  
+  //ex: 1447046883  
   //var first_time  = 1104537600
-  //var current_val = 1510713393
-    
+  //var current_val = 1510713393    
   //var range       = 406175793
-   
-    
-  layer.features.forEach(function(feat){
 
-    var d = Math.log( Number(feat.properties['@timestamp']) ) 
-   
+  var natural = [
+    'natural',
+    'waterway',
+  ]
+ 
+  var suffix;
+  layer.features.forEach(function(feat){
+      
+    //hard code some failures in here
+    if(feat.properties.boundary){
+      return
+    }
+    if(feat.properties.admin_level){
+      return
+    }
+    
+    suffix=30;
+
+    for(var i in natural){
+      if (feat.properties[natural[i]]){
+        suffix=240;
+      }
+    }
+      
     var str;
       
     if (feat.geometry.type == "Polygon"){
-      str = feat.geometry.coordinates[0].slice(0,50).map(function(x){ 
-        return x[1].toFixed(4)+","+x[0].toFixed(4) //+ " :" + (d*10).toFixed(0)
-      }).join(" ")
+      // No empty features allowed :) 
+      if (Object.keys(feat.properties).length==7){
+        return;  
+      }else{
+        str = feat.geometry.coordinates[0].slice(0,50).map(function(x){ 
+          return x[1].toFixed(6)+","+x[0].toFixed(6) //+ " :" + (d*10).toFixed(0)
+        }).join(" ")
+      }
     }else if (feat.geometry.type == "LineString"){
-      str = feat.geometry.coordinates.slice(0,50).map(function(x){ 
-        return x[1].toFixed(4)+","+x[0].toFixed(4) //+ " :" + (d*10).toFixed(0)
-      }).join(" ")
+      //No empty features allowed :) 
+      if (Object.keys(feat.properties).length==7){
+        return;
+      }else{
+        str = feat.geometry.coordinates.slice(0,50).map(function(x){ 
+          return x[1].toFixed(6)+","+x[0].toFixed(6) //+ " :" + (d*10).toFixed(0)
+        }).join(" ")
+      }
     }else if (feat.geometry.type == "Point"){
-      str = feat.geometry.coordinates[1].toFixed(4)+","+feat.geometry.coordinates[0].toFixed(4) 
+      //Since we're using osm-qa-tiles, empty features don't exist anyway
+      str = feat.geometry.coordinates[1].toFixed(6)+","+feat.geometry.coordinates[0].toFixed(6) 
     }
     
     if(str){ 
-      writeData(str + " :" + (d*10).toFixed(0) +"\n") 
+      writeData(str + " :" + suffix +"\n") 
     }
   });
-  done(null, null);
+  done( null, null );
 };

@@ -1,0 +1,1 @@
+~/opt/datamaps/render -A -C360 -x s1 -x u -t255 -G0.25 -L0.5 -- na.dm 4 4 -158 62 -47 > /data/www/jennings/density-na.png
