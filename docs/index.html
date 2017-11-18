@@ -28,12 +28,21 @@
 </head>
 <body>
 
-<nav id="control" class="absolute top right z5 bg-gray-dark round-bold m12 p6">
-  <label id='toggle-labels' class='switch-container bg-gray-dark round-bold m12 p6 color-gray-faint'>
-    <input type='checkbox' checked='checked' onClick="toggleLabels()"/>
-    Labels<div class='switch ml6'></div>
-  </label><br>
-  <a class="link" id='vectorLink' href="#">View as Vector</a>
+<nav id="control" class="absolute top right z5 bg-gray-dark round-bold m12 py12 px12">
+  <button class='btn btn--s' onClick="toggleLabels(this)">Toggle Labels</button>
+
+  <p class="txt--s mt12 color-white ">Map Framework:</p>
+  <div class='toggle-group txt-s'>
+    <label class='toggle-container'>
+      <input checked='checked' name='toggle-2' type='radio' />
+      <div class='toggle '>Mapbox.js/<br>Leaflet</div>
+    </label>
+    <label class='toggle-container'>
+      <input name='toggle-2' type='radio' />
+      <div class='toggle '><a id="vectorLink" href="#">Mapbox-GL<br>(Vector)</a></div>
+    </label>
+  </div>
+  <!-- <a class="btn btn--s" id='vectorLink' href="#">Mapbox-GL</a> -->
 </nav>
 
 <div id='map'></div>
@@ -50,11 +59,13 @@ document.getElementById('vectorLink').addEventListener('mousedown',function(e){
 })
 
 var labelsVisible = true
-function toggleLabels(){
+function toggleLabels(btn){
   labelsVisible = !labelsVisible
   if(labelsVisible){
     labels.addTo(map)
+    btn.classList = 'btn btn--s'
   }else{
+    btn.classList = 'btn btn--s btn--stroke'
     labels.removeFrom(map)
   }
 }
@@ -64,7 +75,7 @@ L.mapbox.accessToken = 'pk.eyJ1IjoiamVubmluZ3NhbmRlcnNvbiIsImEiOiIzMHZndnpvIn0.P
 var map = L.mapbox.map('map')
   .setView([25, -44], 2);
 
-map.options.maxZoom = 13;
+map.options.maxZoom = 12;
 
 var hash = new L.Hash(map)
 
@@ -72,7 +83,9 @@ console.log(hash)
 
 //var layer = L.mapbox.tileLayer('https://api.mapbox.com/v3/mapbox.dark.json');
 
-var densityTiles = L.tileLayer("http://epic-analytics.cs.colorado.edu:9000/jennings/tileserver/osm-density.tiles/{z}/{x}/{y}.png",
+var tilesRoot = 'https://s3-us-west-1.amazonaws.com/openstreetmap-analysis/cdn/osm-density-tiles/'
+
+var densityTiles = L.tileLayer(tilesRoot+"{z}/{x}/{y}.png",
 {attribution: "Map Data &copy; OpenStreetMap Contributors"}
 ).addTo(map);
 

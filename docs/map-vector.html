@@ -22,12 +22,21 @@
 </head>
 <body>
 
-  <nav id="control" class="absolute top right z5 bg-gray-dark round-bold m12 p6">
-    <label id='toggle-labels' class='switch-container bg-gray-dark round-bold m12 p6 color-gray-faint'>
-      <input type='checkbox' checked='checked' onClick="toggleLabels()"/>
-      Labels<div class='switch ml6'></div>
-    </label><br>
-    <a class="link" id='rasterLink' href="#">View as Raster</a>
+  <nav id="control" class="absolute top right z5 bg-gray-dark round-bold m12 py12 px12">
+    <button class='btn btn--s' onClick="toggleLabels(this)">Toggle Labels</button>
+
+    <p class="txt--s mt12 color-white ">Map Framework:</p>
+    <div class='toggle-group txt-s'>
+      <label class='toggle-container'>
+        <input name='toggle-2' type='radio' />
+        <div class='toggle '><a id="rasterLink" href="#">Mapbox.js/<br>Leaflet</a></div>
+      </label>
+      <label class='toggle-container'>
+        <input name='toggle-2' checked='checked' type='radio' />
+        <div class='toggle '>Mapbox-GL<br>(Vector)</div>
+      </label>
+    </div>
+
   </nav>
 
   <div id='map'></div>
@@ -44,8 +53,13 @@
   })
 
 var labelsVisible = true
-function toggleLabels(){
+function toggleLabels(btn){
   labelsVisible = !labelsVisible
+  if(labelsVisible){
+    btn.classList = 'btn btn--s'
+  }else{
+    btn.classList = 'btn btn--s btn--stroke'
+  }
   var layers = ['country-label-lg','country-label-md','country-label-sm',
                 'state-label-lg','state-label-md','state-label-sm',
                 'marine-label-lg-pt','marine-label-md-pt','marine-label-sm-pt',
@@ -65,12 +79,14 @@ var map = new mapboxgl.Map({
     container: 'map',
     zoom: 2,
     minZoom: 1,
-    maxZoom: 8,
+    maxZoom: 12,
     center: [-28.15,20.71],
     //style: "mapbox://styles/jenningsanderson/cj1f8vhtx001s2sltmcqtrfzd",
     style: "mapbox://styles/mapbox/dark-v9",
     hash: true
 });
+
+var tilesRoot = 'https://s3-us-west-1.amazonaws.com/openstreetmap-analysis/cdn/osm-density-tiles/'
 
 map.once('load',function(){
 
@@ -79,8 +95,7 @@ map.once('load',function(){
     'type':'raster',
     'source': {
       'type': 'raster',
-      //'url': 'mapbox://' + 'jenningsanderson.census-users-raster',
-      "tiles": ["http://epic-analytics.cs.colorado.edu:9000/jennings/tileserver/osm-density.tiles/{z}/{x}/{y}.png"],
+      "tiles": [tilesRoot+"{z}/{x}/{y}.png"],
       "tileSize": 512
     }
   },'waterway-label');
