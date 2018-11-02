@@ -1,8 +1,6 @@
 'use strict';
 
 var tilebelt = require('@mapbox/tilebelt')
-//var turfBbox = require('@turf/bbox')
-//var turfArea = require('@turf/area')
 
 module.exports = function(data, tile, writeData, done) {
 
@@ -16,9 +14,14 @@ module.exports = function(data, tile, writeData, done) {
   
   var skip = [
       'hires',
+      'highres',
       'boundary',
       'admin_level',
-      'maritime'
+      'maritime',
+      'route',
+      'communication',
+      'power',
+      'seamark:type'
     ]
  
   var suffix, str;
@@ -33,6 +36,12 @@ module.exports = function(data, tile, writeData, done) {
 
     if (feat.properties.name == 'Bermuda Triangle'){
       return;
+    }
+      
+    if (feat.properties.note){
+      if (feat.properties.note.includes('boundary')){
+        return;
+      }
     }
 
     suffix=30;
